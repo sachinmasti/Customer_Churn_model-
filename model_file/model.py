@@ -83,7 +83,7 @@ def model_pipeline():
         ('numerical_transform',numerical_pipe,make_column_selector(
             pattern='tenure_months|monthly_charge|total_charges'
         ))
-    ])
+    ],remainder='passthrough')
 
     bagging_model = BaggingClassifier(
         estimator=XGBClassifier(

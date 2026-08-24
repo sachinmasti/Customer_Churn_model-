@@ -1,11 +1,11 @@
-from pydantic import BaseModel,Field,field_validator,EmailStr,computed_field
+from pydantic import BaseModel,Field,field_validator,computed_field
 from typing import Annotated,Literal
 from datetime import date
-
+import regex as re
 
 class CustomerChurn(BaseModel):
 
-    age:Annotated[int,Field(...,description='enter your age',gt=18,lt=100)]
+    age:Annotated[int,Field(...,description='enter your age',gt=17,lt=100)]
     gender: Annotated[str,Field(...,description='enter your gender'),Literal['male','female','other']]
     location: Annotated[str,Field(...,description='enter your location',examples=['mumbai','delhi','bangalore'])]
     tenure_months:Annotated[float,Field(...,description='enter your total working months',gt=0,examples=[5,10,20])]
@@ -18,12 +18,12 @@ class CustomerChurn(BaseModel):
     tech_support: Annotated[str,Field(description='enter customer tech support'),Literal['yes','no','no internet service']]
     payment_method: Annotated[str,Field(...,description='enter payment method customer using'),Literal['electronic check','credit card (automatic)',
     'mailed check','bank transfer (automatic)','upi','cash']]
-    satisfaction_score:Annotated[float,Field(...,description='enter customer satisfaction score',gt=0,lt=15)]
+    satisfaction_score:Annotated[float,Field(...,description='enter customer satisfaction score',gt=0,lt=16)]
     last_contact_date: Annotated[date,Field(...,description='enter users last contact date',examples=['2023-07-12','2024-03-16'])]
-    support_ticket: Annotated[int,Field(description='enter a support tickets by user raised',gt=0,lt=100)]
-    email: Annotated[EmailStr,Field(...,description='enter customer email id',examples=['anita19@yahoo.com','yadav31@gmail.com'])]
+    support_ticket: Annotated[int,Field(description='enter a support tickets by user raised',lt=100)]
+    email: Annotated[str,Field(...,description='enter customer email id',examples=['anita19@yahoo.com','yadav31@gmail.com'])]
 
-    @field_validator('gender')
+    @field_validator('gender',mode='before')
     def chek_gender(cls,value):
         if value.lower() not in ['male','female','other']:
             raise ValueError(
@@ -38,7 +38,7 @@ class CustomerChurn(BaseModel):
 
         return 'other' if value.lower() not in city_lst else value.lower()
 
-    @field_validator('contract_type')
+    @field_validator('contract_type',mode='before')
     def chek_contract_type(cls,value):
         if value.lower() not in ['monthly','1 year','2 year']:
             raise ValueError(
@@ -46,7 +46,7 @@ class CustomerChurn(BaseModel):
             )
         else:
             return value.lower()
-    @field_validator('internet_service')
+    @field_validator('internet_service',mode='before')
     def validate_internet_service(cls,value):
         if value.lower() not in ['fiber optic','dsl','no internet service']:
             raise ValueError(
@@ -54,15 +54,15 @@ class CustomerChurn(BaseModel):
             )
         else:
             return value.lower()
-    @field_validator('phone_service')
+    @field_validator('phone_service',mode='before')
     def valid_phone_service(cls, value):
         return value.lower()
 
-    @field_validator('online_security')
+    @field_validator('online_security',mode='before')
     def valid_online_security(cls, value):
         return value.lower()
 
-    @field_validator('tech_support')
+    @field_validator('tech_support',mode='before')
     def valid_tech_support(cls, value):
         if value.lower() not in ['yes','no','no internet service']:
             raise ValueError(
@@ -70,7 +70,7 @@ class CustomerChurn(BaseModel):
             )
         return value.lower()
 
-    @field_validator('payment_method')
+    @field_validator('payment_method',mode='before')
     def check_payment_method(cls, value):
         payment_list = ['electronic check','credit card (automatic)','mailed check','bank transfer (automatic)','upi','cash']
         if value.lower() not in payment_list:
@@ -83,6 +83,48 @@ class CustomerChurn(BaseModel):
     @property
     def last_contact_day(self) -> int:
         return self.last_contact_date.day
+
+    @computed_field
+    @property
+    def last_contact_month(self) -> int:
+        return self.last_contact_date.month
+
+    @computed_field
+    @property
+    def last_contact_year(self) ->int:
+        return self.last_contact_date.year
+
+    @computed_field
+    @property
+    def last_contact_week(self) -> int:
+        return  self.last_contact_date.weekday()
+
+    @computed_field
+    @property
+    def last_contact_week_of_year(self) -> int:
+        return self.last_contact_date.isocalendar().week
+
+    @computed_field
+    @property
+    def valid_email(self) -> int:
+        email_pattern = r'^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
+        if re.match(email_pattern,self.email.lower()):
+            return 1
+
+        return 0
+
+    @computed_field
+    @property
+    def valid_domain(self)-> str:
+        domain_pattern = r'^[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+$'
+        domain = self.email.split('@')[-1]
+
+        if '@' not in self.email:
+            return 'invalid'
+
+        if re.match(domain_pattern,domain):
+            return domain
+        return 'invalid'
 
 def test(model:CustomerChurn):
     print(model)
@@ -101,7 +143,7 @@ test(CustomerChurn(
         tech_support='NO',
         payment_method='Upi',
         satisfaction_score=10,
-        last_contact_date='2020-10-05',
+        last_contact_date='2020-10-09',
         support_ticket=10,
         email='sachinmasti@gmail.com'
     ))
