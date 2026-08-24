@@ -15,6 +15,7 @@ class CustomerChurn(BaseModel):
     internet_service : Annotated[str,Field(...,description='enter customers internet service details'),Literal['fiber optic','dsl','no internet service']]
     phone_service: Annotated[str,Field(description='enter yes if  customers using phone service phone service'),Literal['yes','no']]
     online_security: Annotated[str,Field(description='enter yes if customer using online security'),Literal['yes','no']]
+    tech_support: Annotated[str,Field(description='enter customer tech support'),Literal['yes','no','no internet service']]
     payment_method: Annotated[str,Field(...,description='enter payment method customer using'),Literal['electronic check','credit card (automatic)',
     'mailed check','bank transfer (automatic)','upi','cash']]
     satisfaction_score:Annotated[float,Field(...,description='enter customer satisfaction score',gt=0,lt=15)]
