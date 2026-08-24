@@ -1,7 +1,7 @@
 from pydantic import BaseModel,Field,field_validator,EmailStr,computed_field
 from typing import Annotated,Literal
 from datetime import date
-import pandas as pd
+
 
 class CustomerChurn(BaseModel):
 
@@ -25,23 +25,81 @@ class CustomerChurn(BaseModel):
 
     @field_validator('gender')
     def chek_gender(cls,value):
-        pass
+        if value.lower() not in ['male','female','other']:
+            raise ValueError(
+                'gender must be ["male","female","other"]'
+            )
+        else:
+            return value.lower()
+
+    @field_validator('location')
+    def check_location(cls, value):
+        city_lst = ['delhi','mumbai','chennai','bangalore','kolkata','hyderabad','pune']
+
+        return 'other' if value.lower() not in city_lst else value.lower()
+
+    @field_validator('contract_type')
+    def chek_contract_type(cls,value):
+        if value.lower() not in ['monthly','1 year','2 year']:
+            raise ValueError(
+                'contract type must be "monthly","1 year","2 year"'
+            )
+        else:
+            return value.lower()
+    @field_validator('internet_service')
+    def validate_internet_service(cls,value):
+        if value.lower() not in ['fiber optic','dsl','no internet service']:
+            raise ValueError(
+                f'your {value} must be in \'fiber optic','dsl','no internet service\''
+            )
+        else:
+            return value.lower()
+    @field_validator('phone_service')
+    def valid_phone_service(cls, value):
+        return value.lower()
+
+    @field_validator('online_security')
+    def valid_online_security(cls, value):
+        return value.lower()
+
+    @field_validator('tech_support')
+    def valid_tech_support(cls, value):
+        if value.lower() not in ['yes','no','no internet service']:
+            raise ValueError(
+                f'your {value} must be [\'yes','no','no internet service\']'
+            )
+        return value.lower()
+
+    @field_validator('payment_method')
+    def check_payment_method(cls, value):
+        payment_list = ['electronic check','credit card (automatic)','mailed check','bank transfer (automatic)','upi','cash']
+        if value.lower() not in payment_list:
+            raise ValueError(
+                f'your {value} must be {payment_list} so retype your input'
+            )
+        return value.lower()
+
+    @computed_field
+    @property
+    def last_contact_day(self) -> int:
+        return self.last_contact_date.day
 
 def test(model:CustomerChurn):
     print(model)
 
 test(CustomerChurn(
-        age=15,
-        gender='male',
-        location='bangalore',
+        age=19,
+        gender='Male',
+        location='Delhi',
         tenure_months=10,
         monthly_charges=100,
         total_charges=2000,
-        contract_type='monthly',
-        internet_service='fiber optic',
-        phone_service='yes',
-        online_security='no',
-        payment_method='upi',
+        contract_type='Monthly',
+        internet_service='Fiber Optic',
+        phone_service='Yes',
+        online_security='No',
+        tech_support='NO',
+        payment_method='Upi',
         satisfaction_score=10,
         last_contact_date='2020-10-05',
         support_ticket=10,
