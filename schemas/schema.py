@@ -126,25 +126,5 @@ class CustomerChurn(BaseModel):
             return domain
         return 'invalid'
 
-def test(model:CustomerChurn):
-    print(model)
 
-test(CustomerChurn(
-        age=19,
-        gender='Male',
-        location='Delhi',
-        tenure_months=10,
-        monthly_charges=100,
-        total_charges=2000,
-        contract_type='Monthly',
-        internet_service='Fiber Optic',
-        phone_service='Yes',
-        online_security='No',
-        tech_support='NO',
-        payment_method='Upi',
-        satisfaction_score=10,
-        last_contact_date='2020-10-09',
-        support_ticket=10,
-        email='sachinmasti@gmail.com'
-    ))
 
