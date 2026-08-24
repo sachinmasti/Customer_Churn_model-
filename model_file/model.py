@@ -18,11 +18,11 @@ from sklearn.preprocessing import FunctionTransformer
 from sklearn.preprocessing import TargetEncoder
 
 from xgboost import XGBClassifier
-from scipy.stats.mstats import  winsorize
+from model_file.preprocessing import capping
 
 
 def load_data():
-    base_dir: Path = Path(__file__).resolve().parent
+    base_dir: Path = Path(__file__).resolve().parent.parent
     df_path = base_dir/'data'/'customer_churn_v2.0_clean.csv'
     df = pd.read_csv(df_path)
     return df
