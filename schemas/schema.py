@@ -22,7 +22,9 @@ class CustomerChurn(BaseModel):
     support_ticket: Annotated[int,Field(description='enter a support tickets by user raised',gt=0,lt=100)]
     email: Annotated[EmailStr,Field(...,description='enter customer email id',examples=['anita19@yahoo.com','yadav31@gmail.com'])]
 
-
+    @field_validator('gender')
+    def chek_gender(cls,value):
+        pass
 
 
 def test(model:CustomerChurn):
