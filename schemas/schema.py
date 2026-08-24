@@ -26,7 +26,6 @@ class CustomerChurn(BaseModel):
     def chek_gender(cls,value):
         pass
 
-
 def test(model:CustomerChurn):
     print(model)
 
