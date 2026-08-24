@@ -21,10 +21,6 @@ from xgboost import XGBClassifier
 from scipy.stats.mstats import  winsorize
 
 
-def capping(x):
-    cap = winsorize(x,limits=(0.05,0.05))
-    return cap
-
 def load_data():
     base_dir: Path = Path(__file__).resolve().parent
     df_path = base_dir/'data'/'customer_churn_v2.0_clean.csv'
