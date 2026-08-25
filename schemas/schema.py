@@ -20,7 +20,7 @@ class CustomerChurn(BaseModel):
     'mailed check','bank transfer (automatic)','upi','cash']]
     satisfaction_score:Annotated[float,Field(...,description='enter customer satisfaction score',gt=0,lt=16)]
     last_contact_date: Annotated[date,Field(...,description='enter users last contact date',examples=['2023-07-12','2024-03-16'])]
-    support_ticket: Annotated[int,Field(description='enter a support tickets by user raised',lt=100)]
+    support_tickets: Annotated[int,Field(description='enter a support tickets by user raised',lt=100)]
     email: Annotated[str,Field(...,description='enter customer email id',examples=['anita19@yahoo.com','yadav31@gmail.com'])]
 
     @field_validator('gender',mode='before')
@@ -115,7 +115,7 @@ class CustomerChurn(BaseModel):
 
     @computed_field
     @property
-    def valid_domain(self)-> str:
+    def email_domain(self)-> str:
         domain_pattern = r'^[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+$'
         domain = self.email.split('@')[-1]
 
@@ -125,6 +125,4 @@ class CustomerChurn(BaseModel):
         if re.match(domain_pattern,domain):
             return domain
         return 'invalid'
-
-
 
