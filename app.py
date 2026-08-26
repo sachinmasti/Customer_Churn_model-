@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, RedirectResponse
 from src.schema import CustomerChurn
 import joblib
@@ -10,6 +11,15 @@ model_path = BASE_DIR / 'models' / 'customer_churn_model.joblib'
 
 model_load = joblib.load(model_path)
 app = FastAPI()
+
+# Allow the Gradio UI (and any frontend) to call this API from the browser.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'],
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*'],
+)
 
 
 @app.get('/')

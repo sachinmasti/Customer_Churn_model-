@@ -1,0 +1,20 @@
+FROM python:3.12-slim
+
+WORKDIR /app
+
+ENV GRADIO_SERVER_NAME=0.0.0.0 \
+    API_URL=http://api:8000
+
+COPY ui/requirements.txt ui-requirements.txt
+RUN pip install --no-cache-dir -r ui-requirements.txt
+
+COPY src/ src/
+COPY models/ models/
+COPY data/ data/
+COPY ui/ ui/
+
+WORKDIR /app
+
+EXPOSE 7860
+
+CMD ["python", "-m", "ui.app"]

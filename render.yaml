@@ -1,0 +1,30 @@
+# Render Blueprint — deploys both services with one click
+# Docs: https://render.com/docs/blueprint-spec
+#
+# After the first deploy:
+#   API  -> https://churnguard-api.onrender.com        (/docs for Swagger)
+#   UI   -> https://churnguard-ui.onrender.com         (Gradio interface)
+#
+# Keep-alive (prevents free-tier sleep):
+#   Add a free cron-job.org monitor hitting /health on BOTH urls every 10 min.
+
+services:
+  - type: web
+    name: churnguard-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile.api
+    dockerContext: .
+    healthCheckPath: /health
+    plan: free
+    autoDeploy: true
+
+  - type: web
+    name: churnguard-ui
+    runtime: docker
+    dockerfilePath: ./Dockerfile.ui
+    dockerContext: .
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: API_URL
+        value: https://churnguard-api.onrender.com

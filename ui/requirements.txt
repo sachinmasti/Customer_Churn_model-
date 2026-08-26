@@ -1,0 +1,9 @@
+gradio~=6.0
+plotly~=6.0
+pandas~=2.2
+numpy~=1.26
+scikit-learn~=1.5
+xgboost~=2.1
+scipy~=1.14
+joblib~=1.4
+requests~=2.32
