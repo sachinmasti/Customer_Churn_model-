@@ -1,9 +1,11 @@
-gradio~=6.0
-plotly~=6.0
-pandas~=2.2
-numpy~=1.26
-scikit-learn~=1.5
-xgboost~=2.1
-scipy~=1.14
-joblib~=1.4
-requests~=2.32
+# Exact versions matching the training environment — required so the
+# pickled pipeline artifact loads cleanly inside the container.
+gradio==6.26.0
+plotly==6.7.0
+pandas==3.0.2
+numpy==2.4.4
+scikit-learn==1.8.0
+xgboost==3.2.0
+scipy==1.17.1
+joblib==1.5.3
+requests==2.34.2
